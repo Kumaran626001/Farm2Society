@@ -59,6 +59,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_status'])) {
     <title>View Orders - Farm2Society</title>
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/firefly.css">
+    <script src="../assets/js/firefly.js"></script>
 </head>
 
 <body>
@@ -77,58 +79,58 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_status'])) {
     <div class="container">
         <h2>Received Orders</h2>
         <?php if ($result->num_rows > 0): ?>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Order ID</th>
-                        <th>Date</th>
-                        <th>Consumer</th>
-                        <th>Item</th>
-                        <th>Qty (kg)</th>
-                        <th>Amount</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php while ($row = $result->fetch_assoc()): ?>
+            <div class="table-responsive">
+                <table>
+                    <thead>
                         <tr>
-                            <td>#<?php echo $row['order_id']; ?></td>
-                            <td><?php echo date("d-m-Y", strtotime($row['order_date'])); ?></td>
-                            <td>
-                                <?php echo $row['consumer_name']; ?><br>
-                                <small><?php echo $row['consumer_location']; ?></small>
-                            </td>
-                            <td><?php echo $row['product_name']; ?></td>
-                            <td><?php echo $row['quantity']; ?></td>
-                            <td>₹<?php echo $row['price'] * $row['quantity']; ?></td>
-                            <td>
-                                <span
-                                    style="font-weight:bold; color: <?php echo ($row['order_status'] == 'Delivered') ? 'green' : 'orange'; ?>">
-                                    <?php echo $row['order_status']; ?>
-                                </span>
-                            </td>
-                            <td>
-                                <form method="POST" style="display:inline;">
-                                    <input type="hidden" name="order_id" value="<?php echo $row['order_id']; ?>">
-                                    <select name="status" style="padding: 5px;">
-                                        <option value="Pending" <?php if ($row['order_status'] == 'Pending')
-                                            echo 'selected'; ?>>
-                                            Pending</option>
-                                        <option value="Packed" <?php if ($row['order_status'] == 'Packed')
-                                            echo 'selected'; ?>>
-                                            Packed</option>
-                                        <option value="Delivered" <?php if ($row['order_status'] == 'Delivered')
-                                            echo 'selected'; ?>>Delivered</option>
-                                    </select>
-                                    <button type="submit" name="update_status" class="btn"
-                                        style="width:auto; padding: 5px 10px;">Update</button>
-                                </form>
-                            </td>
+                            <th>Order ID</th>
+                            <th>Consumer</th>
+                            <th>Product</th>
+                            <th>Qty</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th>Action</th>
                         </tr>
-                    <?php endwhile; ?>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        <?php while ($row = $result->fetch_assoc()): ?>
+                            <tr>
+                                <td>#<?php echo $row['order_id']; ?></td>
+                                <td>
+                                    <?php echo $row['consumer_name']; ?><br>
+                                    <small><?php echo $row['consumer_location']; ?></small>
+                                </td>
+                                <td><?php echo $row['product_name']; ?></td>
+                                <td><?php echo $row['quantity']; ?> kg</td>
+                                <td>₹<?php echo number_format($row['price'] * $row['quantity'], 2); ?></td>
+                                <td>
+                                    <span
+                                        style="font-weight:bold; color: <?php echo ($row['order_status'] == 'Delivered') ? 'green' : 'orange'; ?>">
+                                        <?php echo $row['order_status']; ?>
+                                    </span>
+                                </td>
+                                <td>
+                                    <form method="POST" style="display:inline;">
+                                        <input type="hidden" name="order_id" value="<?php echo $row['order_id']; ?>">
+                                        <select name="status" style="padding: 5px;">
+                                            <option value="Pending" <?php if ($row['order_status'] == 'Pending')
+                                                echo 'selected'; ?>>
+                                                Pending</option>
+                                            <option value="Packed" <?php if ($row['order_status'] == 'Packed')
+                                                echo 'selected'; ?>>
+                                                Packed</option>
+                                            <option value="Delivered" <?php if ($row['order_status'] == 'Delivered')
+                                                echo 'selected'; ?>>Delivered</option>
+                                        </select>
+                                        <button type="submit" name="update_status" class="btn"
+                                            style="width:auto; padding: 5px 10px;">Update</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <?php endwhile; ?>
+                    </tbody>
+                </table>
+            </div>
         <?php else: ?>
             <p>No orders received yet.</p>
         <?php endif; ?>

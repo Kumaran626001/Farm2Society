@@ -34,12 +34,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <title>Add Product - Farm2Society</title>
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/firefly.css">
+    <script src="../assets/js/firefly.js"></script>
 </head>
 
 <body>
     <header>
         <nav>
             <a href="../index.php" class="brand"><i class="fas fa-leaf"></i> Farm2Society</a>
+            <div class="menu-toggle" onclick="document.querySelector('header nav ul').classList.toggle('nav-active')">
+                <i class="fas fa-bars"></i>
+            </div>
             <ul>
                 <li><a href="dashboard.php">Dashboard</a></li>
                 <li><a href="add_product.php">Add Vegetable</a></li>

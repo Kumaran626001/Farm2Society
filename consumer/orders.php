@@ -24,17 +24,22 @@ $result = $stmt->get_result();
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- Styles handled in style.css -->
+    <link rel="stylesheet" href="../assets/css/firefly.css">
+    <script src="../assets/js/firefly.js"></script>
 </head>
 
 <body>
     <header>
         <nav>
-            <a href="index.php" class="brand"><i class="fas fa-leaf"></i> Farm2Society</a>
+            <a href="../index.php" class="brand"><i class="fas fa-leaf"></i> Farm2Society</a>
+            <div class="menu-toggle" onclick="document.querySelector('header nav ul').classList.toggle('nav-active')">
+                <i class="fas fa-bars"></i>
+            </div>
             <ul>
                 <li><a href="dashboard.php">Browse Vegetables</a></li>
                 <li><a href="cart.php">My Cart</a></li>
                 <li><a href="orders.php">My Orders</a></li>
-                <li><a href="../logout.php">Logout</a></li>
+                <li><a href="../logout.php">Logout (<?php echo $_SESSION['name'] ?? 'User'; ?>)</a></li>
             </ul>
         </nav>
     </header>
@@ -49,10 +54,14 @@ $result = $stmt->get_result();
                 $status = $row['order_status'];
                 // Determine Status Class
                 $s_lower = strtolower($status);
-                if ($s_lower == 'pending') $status_class = 'status-pending';
-                elseif ($s_lower == 'completed' || $s_lower == 'delivered') $status_class = 'status-completed';
-                elseif ($s_lower == 'cancelled') $status_class = 'status-cancelled';
-                else $status_class = 'status-default';
+                if ($s_lower == 'pending')
+                    $status_class = 'status-pending';
+                elseif ($s_lower == 'completed' || $s_lower == 'delivered')
+                    $status_class = 'status-completed';
+                elseif ($s_lower == 'cancelled')
+                    $status_class = 'status-cancelled';
+                else
+                    $status_class = 'status-default';
 
                 // Fetch Items and Farmers
                 $items_query = "SELECT oi.*, p.product_name, p.farmer_id, u.name as farmer_name 
@@ -85,34 +94,39 @@ $result = $stmt->get_result();
                         <span><?php echo $order_date; ?></span>
                     </div>
 
-                    <table class="order-items-table">
-                        <thead>
-                            <tr>
-                                <th>Product</th>
-                                <th>Farmer</th>
-                                <th>Quantity</th>
-                                <th>Price</th>
-                                <th>Subtotal</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php while ($item = $items_result->fetch_assoc()):
-                                $farmers_in_order[$item['farmer_id']] = $item['farmer_name'];
-                                ?>
+                    <div class="table-responsive">
+                        <table class="table-outline">
+                            <thead>
                                 <tr>
-                                    <td><?php echo $item['product_name']; ?></td>
-                                    <td><?php echo $item['farmer_name']; ?></td>
-                                    <td><?php echo $item['quantity']; ?> kg</td>
-                                    <td>₹<?php echo $item['price']; ?></td>
-                                    <td>₹<?php echo number_format($item['quantity'] * $item['price'], 2); ?></td>
+                                    <th>Product</th>
+                                    <th>Farmer</th>
+                                    <th>Qty</th>
+                                    <th>Price</th>
+                                    <th>Subtotal</th>
+                                    <th>Status</th>
                                 </tr>
-                            <?php endwhile; ?>
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                <?php while ($item = $items_result->fetch_assoc()):
+                                    $farmers_in_order[$item['farmer_id']] = $item['farmer_name'];
+                                    ?>
+                                    <tr>
+                                        <td><?php echo $item['product_name']; ?></td>
+                                        <td><?php echo $item['farmer_name']; ?></td>
+                                        <td><?php echo $item['quantity']; ?> kg</td>
+                                        <td>₹<?php echo $item['price']; ?></td>
+                                        <td>₹<?php echo number_format($item['quantity'] * $item['price'], 2); ?></td>
+                                        <td><span class="status-badge <?php echo $status_class; ?>"><?php echo $status; ?></span>
+                                        </td>
+                                    </tr>
+                                <?php endwhile; ?>
+                            </tbody>
+                        </table>
+                    </div>
 
                     <div class="order-footer">
-                        <span class="status-badge <?php echo $status_class; ?>"><?php echo $status; ?></span>
-<br>
+                        <!-- Status removed from here as per request -->
+                        <br>
                         <!-- Rating Section -->
                         <?php if ($status == 'Delivered'): ?>
                             <div class="rating-section" style="margin-left: 20px;">
@@ -138,7 +152,7 @@ $result = $stmt->get_result();
                                             <button type="submit" class="btn"
                                                 style="width:auto; padding: 2px 5px; font-size: 0.8em;">Submit</button>
                                         </form>
-                                        
+
                                     <?php endif; ?>
                                 <?php endforeach; ?>
                             </div>

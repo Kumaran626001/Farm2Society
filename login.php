@@ -63,6 +63,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <header>
         <nav>
             <a href="index.php" class="brand"><i class="fas fa-leaf"></i> Farm2Society</a>
+            <div class="menu-toggle" onclick="document.querySelector('header nav ul').classList.toggle('nav-active')">
+                <i class="fas fa-bars"></i>
+            </div>
             <ul>
                 <li><a href="index.php">Home</a></li>
                 <li><a href="login.php">Login</a></li>
@@ -93,6 +96,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <button type="submit" class="btn">Login</button>
         </form>
     </div>
+    <script src="assets/js/veggies.js"></script>
 </body>
 
 </html>
